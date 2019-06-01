@@ -1,4 +1,5 @@
 require('dotenv').config()
+const path = require('path');
 const express = require('express');
 const checkJwt = require('express-jwt');
 const bodyParser = require('body-parser');
@@ -44,7 +45,8 @@ app.use((req, res, next) => {
 });
 //Open paths that does not need login
 let openPaths = [
-    '/api/users/authenticate'
+    '/api/users/authenticate',
+    '/api/users/signUp'
 ];
 // Validate the user using authentication
 app.use(
@@ -59,7 +61,9 @@ app.use(bodyParser.json());
 
 
 /****** DATABASE SCHEMA *****/
-const userSchema = mongoose.Schema({
+const Schema = mongoose.Schema;
+
+const userSchema = new Schema({
     username: String,
     hash: String
 });
@@ -90,6 +94,16 @@ const User = mongoose.model('User', userSchema);
 let usersRouter = require('./user_route')(User);
 app.use('/api/users', usersRouter);
 
+app.get('/api/user/:id', (req, res) => {
+    User.findOne({_id: req.params.id}, (err, user) => {
+        if(err) return console.error(err);
+        const userInfo = {
+            _id: user._id,
+            username: user.username
+        }
+        res.json(userInfo);
+    })
+})
 
 /**** Reroute all unknown requests to the React index.html ****/
 // app.get('/*', (req, res) => {
