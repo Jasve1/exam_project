@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 
-export class Login extends Component {
-
+export class Signup extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
-        
+
         const user = {};
         e.target.childNodes.forEach((elm) => {
           if(elm.value){
@@ -12,27 +11,27 @@ export class Login extends Component {
           }
           elm.value = null
         });
-    
-        this.props.login(
+
+        this.props.signup(
             user.username,
             user.password
         )
         .then(() => {
-            this.props.history.push('/');
+           this.props.history.push('/company'); 
         })
+        
     }
-
     render() {
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" name="username" placeholder="Your Username" required/>
                     <input type="password" name="password" placeholder="Password" required/>
-                    <button type="submit">Login</button>
+                    <button type="submit">Sign up</button>
                 </form>
             </div>
         )
     }
 }
 
-export default Login
+export default Signup

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import '../styles/App.scss';
 
-import AuthService from './login/AuthService';
-import Login from './login/Login';
-import Signup from './signup/Signup';
+import AuthService from './user/login/AuthService';
+import Navigation from './Navigation';
+import User from './user/User';
 
 export class App extends Component {
   LOCAL_URL = 'http://localhost:8080';
@@ -16,7 +16,19 @@ export class App extends Component {
 
     this.state = {
       isLoggedIn: false,
-      user: {}
+      loginStatus: '',
+      user: {},
+      jobs: [],
+      navigation: [
+        {
+          path: '/',
+          name: 'Home'
+        },
+        {
+          path: '/company',
+          name: 'Company'
+        }
+      ]
     }
   }
 
@@ -41,7 +53,8 @@ export class App extends Component {
           method: 'post',
           body: JSON.stringify({
             username: username,
-            password: password
+            password: password,
+            jobPostings: []
           })
         })
         .then(json => {
@@ -50,6 +63,37 @@ export class App extends Component {
       }else{
         rej('Username or password missing')
       }
+    })
+  }
+
+  submitJob = (title, category, area, description, userId) => {
+    return new Promise((res, rej) => {
+      this.Auth.fetch(`${this.LOCAL_URL}/api/jobPostings`, {
+        method: 'post',
+        body: JSON.stringify({
+          title: title,
+          category: category,
+          area: area,
+          description: description,
+          userId: userId
+        })
+      })
+      .then(json => {
+        console.log(json);
+        res(json);
+      })
+    })
+  }
+  linkJobToUser = (jobId, userId) => {
+    this.Auth.fetch(`${this.LOCAL_URL}/api/user/jobPostings/${userId}`, {
+      method: 'put',
+      body: JSON.stringify({
+        jobPostings: {_id: jobId}
+      })
+    })
+    .then(json => {
+      console.log(json);
+      this.getUser(json._id);
     })
   }
 
@@ -63,7 +107,10 @@ export class App extends Component {
             console.log(`${res.user.username} is logged in`);
             this.getUser(localStorage.getItem('userId'));
             this.setState({isLoggedIn: true});
-        });
+        })
+        .catch(() => {
+          this.setState({loginStatus: 'Login failed. Wrong username or password'})
+        })
       } else{
         rej('Username or password missing')
       }
@@ -79,27 +126,22 @@ export class App extends Component {
     return (
       <Router>
         <header>
-          {
-            this.state.isLoggedIn ? <h1>Hello {this.state.user.username}</h1>:
-            <h1>Hello, please login</h1>
-          }
-          <nav>
-            {
-              this.state.isLoggedIn ? <button onClick={this.logout}>Log out</button> :
-              <Link to='/login'>Login</Link>
-            }
-          </nav>
+          <Navigation navigation={this.state.navigation}/>
         </header>
         <main>
           <Switch>
-            <Route exact path={'/login'}
-              render={(props) =>
-                this.state.isLoggedIn ? props.history.push('/'):
-                <div>
-                  <Login {...props} login={this.login}/>
-                  <p>or</p>
-                  <Signup {...props} signup={this.signUp}/>
-                </div>
+            <Route exact path={'/company'}
+              render={(props) => 
+                <User {...props} 
+                  isLoggedIn={this.state.isLoggedIn} 
+                  user={this.state.user}
+                  logout={this.logout}
+                  login={this.login}
+                  loginStatus={this.state.loginStatus}
+                  signUp={this.signUp}
+                  submitJob={this.submitJob}
+                  linkJobToUser={this.linkJobToUser}
+                />
               }
             />
           </Switch>

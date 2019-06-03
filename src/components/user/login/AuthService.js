@@ -18,9 +18,14 @@ class AuthService {
                 password
             })
         }).then(res => {
-            this.setToken(res.token, res.user._id);
-            console.log(res.msg);
-            return Promise.resolve(res);
+            if(res.msg === "Wrong password"){
+                return Promise.reject('wrong password')
+            }else{
+                this.setToken(res.token, res.user._id);
+                console.log(res.msg);
+                return Promise.resolve(res);
+            }
+            
         })
     }
 

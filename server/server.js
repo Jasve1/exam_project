@@ -65,10 +65,20 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     username: String,
-    hash: String
+    hash: String,
+    jobPostings: [{type: Schema.Types.ObjectId, ref: 'Job'}]
+});
+
+const jobSchema = new Schema({
+    title: String,
+    category: String,
+    area: String,
+    description: String,
+    user: {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
 const User = mongoose.model('User', userSchema);
+const Job = mongoose.model('Job', jobSchema);
 
 // const users = [
 //     { username: "krdo", password: '123'},
@@ -95,14 +105,47 @@ let usersRouter = require('./user_route')(User);
 app.use('/api/users', usersRouter);
 
 app.get('/api/user/:id', (req, res) => {
-    User.findOne({_id: req.params.id}, (err, user) => {
+    User.findOne({_id: req.params.id})
+    .populate('jobPostings')
+    .exec((err, user) => {
         if(err) return console.error(err);
         const userInfo = {
             _id: user._id,
-            username: user.username
+            username: user.username,
+            jobPostings: user.jobPostings
         }
         res.json(userInfo);
     })
+});
+
+app.put('/api/user/jobPostings/:id', (req, res) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
+        if(err) return console.error(err);
+        user.jobPostings.push(req.body.jobPostings);
+        user.save((err, user) => {
+            if(err) return console.error(err);
+            console.log(user);
+        });
+        res.json(user);
+    })
+})
+
+//JOB POSTINGS
+
+//POST
+app.post('/api/jobPostings', (req, res) => {
+    let newJob = new Job({
+        title: req.body.title,
+        category: req.body.category,
+        area: req.body.area,
+        description: req.body.description,
+        user: req.body.userId
+    });
+    newJob.save((err, job) => {
+        if(err) return console.error(err);
+        console.log(job);
+        res.json(job);
+    });
 })
 
 /**** Reroute all unknown requests to the React index.html ****/
