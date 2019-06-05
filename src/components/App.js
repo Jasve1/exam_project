@@ -16,7 +16,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
 
-    this.Auth = new AuthService(`/api/users/authenticate`);
+    this.Auth = new AuthService(`${this.LOCAL_URL}/api/users/authenticate`);
 
     this.state = {
       isLoggedIn: false,
@@ -49,21 +49,21 @@ export class App extends Component {
   }
 
   getJobs = () => {
-    this.Auth.fetch(`/api/jobs`)
+    this.Auth.fetch(`${this.LOCAL_URL}/api/jobs`)
     .then(json => {
       this.setState({jobs: json})
       console.log(this.state.jobs)
     })
   }
   getCategories = () => {
-    this.Auth.fetch(`/api/categories`)
+    this.Auth.fetch(`${this.LOCAL_URL}/api/categories`)
     .then(json => {
       this.setState({categories: json})
       console.log(this.state.categories)
     })
   }
   getAreas = () => {
-    this.Auth.fetch(`/api/areas`)
+    this.Auth.fetch(`${this.LOCAL_URL}/api/areas`)
     .then(json => {
       this.setState({areas: json})
       console.log(this.state.areas)
@@ -71,7 +71,7 @@ export class App extends Component {
   }
 
   getUser = (userId) => {
-    this.Auth.fetch(`/api/user/${userId}`)
+    this.Auth.fetch(`${this.LOCAL_URL}/api/user/${userId}`)
     .then(json => {
       this.setState({user: json})
     })
@@ -80,7 +80,7 @@ export class App extends Component {
   signUp = (username, password) => {
     return new Promise((res, rej) => {
       if(username && password){
-        this.Auth.fetch(`/api/users/signUp`, {
+        this.Auth.fetch(`${this.LOCAL_URL}/api/users/signUp`, {
           method: 'post',
           body: JSON.stringify({
             username: username,
@@ -99,7 +99,7 @@ export class App extends Component {
 
   submitJob = (title, category, area, description, userId) => {
     return new Promise((res, rej) => {
-      this.Auth.fetch(`/api/jobPostings`, {
+      this.Auth.fetch(`${this.LOCAL_URL}/api/jobPostings`, {
         method: 'post',
         body: JSON.stringify({
           title: title,
@@ -117,7 +117,7 @@ export class App extends Component {
     })
   }
   linkJobToUser = (jobId, userId) => {
-    this.Auth.fetch(`/api/user/jobPostings/${userId}`, {
+    this.Auth.fetch(`${this.LOCAL_URL}/api/user/jobPostings/${userId}`, {
       method: 'put',
       body: JSON.stringify({
         jobPostings: {_id: jobId}
