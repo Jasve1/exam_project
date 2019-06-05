@@ -12,7 +12,7 @@ const port = (process.env.PORT || 8080);
 app.use(express.static(path.join(__dirname, '../build')));
 
 /****** DATABASE *****/
-mongoose.connect(process.env.LOCAL_DB, {useNewUrlParser: true});
+mongoose.connect(process.env.CONNECTION_STRING, {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -168,9 +168,9 @@ app.post('/api/jobPostings', (req, res) => {
 })
 
 /**** Reroute all unknown requests to the React index.html ****/
-// app.get('/*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../build/index.html'));
-//   });
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  });
 
 /****** Listen ******/
 app.listen(port, () => console.log(`API running on port ${port}!`));

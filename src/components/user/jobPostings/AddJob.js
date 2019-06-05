@@ -40,10 +40,10 @@ export class AddJob extends Component {
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" name="title" placeholder="Add a title" required/>
-                    <select name="area">
+                    <select name="area" required>
                         {this.renderElmList(areas)}
                     </select>
-                    <select name="category">
+                    <select name="category" required>
                         {this.renderElmList(categories)}
                     </select>
                     <textarea type="text" name="description" placeholder="Add a description" required/>
