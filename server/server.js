@@ -81,11 +81,13 @@ const jobSchema = new Schema({
 });
 
 const categorySchema = new Schema({
-    name: String
+    name: String,
+    path_name: String
 });
 
 const areaSchema = new Schema({
-    name: String
+    name: String,
+    path_name: String
 });
 
 const User = mongoose.model('User', userSchema);

@@ -8,7 +8,7 @@ import User from './user/User';
 import Categories from './sorting/Categories';
 import Area from './sorting/Areas';
 import JobList from './sorting/JobList';
-import Job from './Job';
+import Job from './job/Job';
 
 export class App extends Component {
   LOCAL_URL = 'http://localhost:8080';
@@ -28,11 +28,11 @@ export class App extends Component {
       navigation: [
         {
           path: '/',
-          name: 'Home'
+          name: 'See Job Postings'
         },
         {
           path: '/company',
-          name: 'Company'
+          name: 'Post a job'
         }
       ]
     }
@@ -42,7 +42,7 @@ export class App extends Component {
     this.getJobs();
     this.getCategories();
     this.getAreas();
-    if(this.Auth.getToken()){
+    if(this.Auth.loggedIn()){
       this.setState({isLoggedIn: true});
       this.getUser(localStorage.getItem('userId'));
     }
@@ -163,6 +163,7 @@ export class App extends Component {
     let job = this.getJobById(id);
     return <Job {...props}
               job={job}
+              jobs={this.state.jobs}
             />
   }
 
@@ -170,6 +171,7 @@ export class App extends Component {
     return (
       <Router>
         <header>
+          <h1>Find your dream job here!</h1>
           <Navigation navigation={this.state.navigation}/>
         </header>
         <main>
@@ -177,17 +179,24 @@ export class App extends Component {
 
             <Route exact path={'/'}
               render={(props) => 
-                <Categories {...props} jobs={this.state.jobs} categories={this.state.categories}/>
+                <div>
+                  <h2>Choose a category</h2>
+                  <Categories {...props} jobs={this.state.jobs} categories={this.state.categories}/>
+                </div>
               }
             />
 
             <Route exact path={'/jobs/:category'}
               render={(props) => 
-                <Area {...props} 
-                  jobs={this.state.jobs} 
-                  category={props.match.params.category}
-                  areas={this.state.areas}
-                />
+                <div>
+                  <h2>Choose a location</h2>
+                  <Area {...props} 
+                    jobs={this.state.jobs} 
+                    category={props.match.params.category}
+                    areas={this.state.areas}
+                  />
+                </div>
+                
               }
             />
 

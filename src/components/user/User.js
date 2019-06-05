@@ -11,8 +11,8 @@ export class User extends Component {
             <div>
                 <header>
                     {
-                        this.props.isLoggedIn ? <h1>Hello {this.props.user.username}</h1>:
-                        <h1>Hello, to post jobs you need to login or sign up</h1>
+                        this.props.isLoggedIn ? <h2>Hello {this.props.user.username}</h2>:
+                        <h2>Hello, to post jobs you need to login or sign up</h2>
                     }
                 </header>
                 <div>
@@ -33,14 +33,14 @@ export class User extends Component {
                         <div>
                             <article>
                                 <header>
-                                    <h2>Login</h2>
+                                    <h3>Login</h3>
                                 </header>
                                 <Login login={this.props.login} loginStatus={this.props.loginStatus}/>
                             </article>
                             <p>or</p>
                             <article>
                                 <header>
-                                    <h2>Sign up</h2>
+                                    <h3>Sign up</h3>
                                 </header>
                                 <Signup signup={this.props.signUp}/>
                             </article>

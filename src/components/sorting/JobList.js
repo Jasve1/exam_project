@@ -9,7 +9,7 @@ export class JobList extends Component {
            return <p>Jobs loading...</p>
         }
         
-        let filteredJobs = jobs.filter(job => job.category.name === this.props.category && job.area.name === this.props.area);
+        let filteredJobs = jobs.filter(job => job.category.path_name === this.props.category && job.area.path_name === this.props.area);
 
         if(filteredJobs.length <= 0){
             return <p>No jobs in this area</p>
@@ -18,11 +18,13 @@ export class JobList extends Component {
         return (
             <ul>
                 {filteredJobs.map(elm => (
-                        <Link to={`/job/${elm._id}`} key={elm._id}>
-                            <li>
-                                <p>{elm.title}</p>
-                            </li>
+                    <li key={elm._id}>
+                        <h3>{elm.title}</h3>
+                        <Link to={`/job/${elm._id}`}>
+                            <p>See more</p>
                         </Link>
+                    </li>
+                        
                 ))}
             </ul>
         )
