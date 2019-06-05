@@ -24,6 +24,8 @@ export class User extends Component {
                                 submitJob={this.props.submitJob} 
                                 userId={this.props.user._id} 
                                 linkJobToUser={this.props.linkJobToUser}
+                                categories={this.props.categories}
+                                areas={this.props.areas}
                             />
                             <button onClick={this.props.logout}>Log out</button> 
                         </div>

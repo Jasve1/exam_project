@@ -46,7 +46,10 @@ app.use((req, res, next) => {
 //Open paths that does not need login
 let openPaths = [
     '/api/users/authenticate',
-    '/api/users/signUp'
+    '/api/users/signUp',
+    '/api/jobs',
+    '/api/categories',
+    '/api/areas'
 ];
 // Validate the user using authentication
 app.use(
@@ -71,33 +74,24 @@ const userSchema = new Schema({
 
 const jobSchema = new Schema({
     title: String,
-    category: String,
-    area: String,
+    category: {type: Schema.Types.ObjectId, ref: 'Category'},
+    area: {type: Schema.Types.ObjectId, ref: 'Area'},
     description: String,
     user: {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
+const categorySchema = new Schema({
+    name: String
+});
+
+const areaSchema = new Schema({
+    name: String
+});
+
 const User = mongoose.model('User', userSchema);
 const Job = mongoose.model('Job', jobSchema);
-
-// const users = [
-//     { username: "krdo", password: '123'},
-//     { username: "tosk", password: 'password'},
-//     { username: "mvkh", password: 'l33th0xor'},
-// ];
-
-// users.forEach((d) => {
-//     bcrypt.hash(d.password, 10, (err, hash) => {
-//         let user = new User({
-//             username: d.username,
-//             hash: hash
-//         });
-//         user.save((err, user) => {
-//             if(err) return console.error(err);
-//             console.log(user);
-//         });
-//     })
-// });
+const Category = mongoose.model('Category', categorySchema);
+const Area = mongoose.model('Area', areaSchema);
 
 /****** ROUTES *****/
 //USERS
@@ -131,6 +125,29 @@ app.put('/api/user/jobPostings/:id', (req, res) => {
 })
 
 //JOB POSTINGS
+//GET
+app.get('/api/jobs', (req, res) => {
+    Job.find({})
+    .populate('user')
+    .populate('category')
+    .populate('area')
+    .exec((err, jobs) => {
+        if(err) return console.error(err);
+        res.json(jobs);
+    })
+})
+app.get('/api/categories', (req, res) => {
+    Category.find({}, (err, categories) => {
+        if(err) return console.error(err);
+        res.json(categories);
+    })
+})
+app.get('/api/areas', (req, res) => {
+    Area.find({}, (err, areas) => {
+        if(err) return console.error(err);
+        res.json(areas);
+    })
+})
 
 //POST
 app.post('/api/jobPostings', (req, res) => {

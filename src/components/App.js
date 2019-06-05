@@ -5,6 +5,10 @@ import '../styles/App.scss';
 import AuthService from './user/login/AuthService';
 import Navigation from './Navigation';
 import User from './user/User';
+import Categories from './sorting/Categories';
+import Area from './sorting/Areas';
+import JobList from './sorting/JobList';
+import Job from './Job';
 
 export class App extends Component {
   LOCAL_URL = 'http://localhost:8080';
@@ -19,6 +23,8 @@ export class App extends Component {
       loginStatus: '',
       user: {},
       jobs: [],
+      categories: [],
+      areas: [],
       navigation: [
         {
           path: '/',
@@ -33,10 +39,35 @@ export class App extends Component {
   }
 
   componentDidMount(){
+    this.getJobs();
+    this.getCategories();
+    this.getAreas();
     if(this.Auth.getToken()){
       this.setState({isLoggedIn: true});
       this.getUser(localStorage.getItem('userId'));
     }
+  }
+
+  getJobs = () => {
+    this.Auth.fetch(`${this.LOCAL_URL}/api/jobs`)
+    .then(json => {
+      this.setState({jobs: json})
+      console.log(this.state.jobs)
+    })
+  }
+  getCategories = () => {
+    this.Auth.fetch(`${this.LOCAL_URL}/api/categories`)
+    .then(json => {
+      this.setState({categories: json})
+      console.log(this.state.categories)
+    })
+  }
+  getAreas = () => {
+    this.Auth.fetch(`${this.LOCAL_URL}/api/areas`)
+    .then(json => {
+      this.setState({areas: json})
+      console.log(this.state.areas)
+    })
   }
 
   getUser = (userId) => {
@@ -81,6 +112,7 @@ export class App extends Component {
       .then(json => {
         console.log(json);
         res(json);
+        this.getJobs();
       })
     })
   }
@@ -122,6 +154,18 @@ export class App extends Component {
     this.setState({isLoggedIn: false});
   }
 
+  getJobById = (id) => {
+    let jobFound = this.state.jobs.find(elm => elm._id === id);
+    return jobFound;
+  }
+
+  renderJob = (props, id) => {
+    let job = this.getJobById(id);
+    return <Job {...props}
+              job={job}
+            />
+  }
+
   render() {
     return (
       <Router>
@@ -130,6 +174,33 @@ export class App extends Component {
         </header>
         <main>
           <Switch>
+
+            <Route exact path={'/'}
+              render={(props) => 
+                <Categories {...props} jobs={this.state.jobs} categories={this.state.categories}/>
+              }
+            />
+
+            <Route exact path={'/jobs/:category'}
+              render={(props) => 
+                <Area {...props} 
+                  jobs={this.state.jobs} 
+                  category={props.match.params.category}
+                  areas={this.state.areas}
+                />
+              }
+            />
+
+            <Route exact path={'/jobs/:category/:area'}
+              render={(props) => 
+                <JobList {...props} 
+                  jobs={this.state.jobs} 
+                  category={props.match.params.category}
+                  area={props.match.params.area}
+                />
+              }
+            />
+
             <Route exact path={'/company'}
               render={(props) => 
                 <User {...props} 
@@ -141,9 +212,18 @@ export class App extends Component {
                   signUp={this.signUp}
                   submitJob={this.submitJob}
                   linkJobToUser={this.linkJobToUser}
+                  categories={this.state.categories}
+                  areas={this.state.areas}
                 />
               }
             />
+
+            <Route exact path={'/job/:id'}
+              render={(props) =>
+                this.renderJob(props, props.match.params.id)
+              }
+            />
+
           </Switch>
         </main>
       </Router>

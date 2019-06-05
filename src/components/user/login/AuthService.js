@@ -1,7 +1,4 @@
-/**
- * Service class for authenticating users against an API
- * and storing JSON Web Tokens in the browsers LocalStorage.
- */
+const jwtDecode = require('jwt-decode');
 class AuthService {
 
     constructor(auth_api_url) {
@@ -30,15 +27,15 @@ class AuthService {
     }
 
     loggedIn() {
-        // TODO: Check if token is expired using 'jwt-decode'
-        // TODO: npm install jwt-decode
-        /*
-        if (jwtDecode(token).exp < Date.now() / 1000) {
-            // Do something
-        }
-         */
+        const token = this.getToken();
 
-        return (this.getToken() !== undefined);
+        if(token){
+            if (jwtDecode(token).exp < Date.now() / 1000) {
+                this.logout()
+            }
+        }
+
+        return (token !== undefined);
     }
 
     setToken(token, userId) {
