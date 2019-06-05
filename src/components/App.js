@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import '../styles/App.scss';
 
-import AuthService from './user/login/AuthService';
+import AuthService from '../utils/AuthService';
 import Navigation from './Navigation';
 import User from './user/User';
 import Categories from './sorting/Categories';

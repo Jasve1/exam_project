@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
+import formObject from '../../../utils/formObject';
 
 export class Signup extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        const user = {};
-        e.target.childNodes.forEach((elm) => {
-          if(elm.value){
-            user[elm.name] = elm.value
-          }
-          elm.value = null
-        });
+        const user = formObject.createObject(e);
 
         this.props.signup(
             user.username,

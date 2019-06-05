@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
+import formObject from '../../../utils/formObject';
 
 export class AddJob extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
 
-        const job = {};
-        e.target.childNodes.forEach((elm) => {
-            console.log(elm)
-          if(elm.value){
-            job[elm.name] = elm.value
-          }
-          elm.value = null
-        });
+        const job = formObject.createObject(e);
 
         this.props.submitJob(
             job.title,
