@@ -52,21 +52,18 @@ export class App extends Component {
     this.Auth.fetch(`/api/jobs`)
     .then(json => {
       this.setState({jobs: json})
-      console.log(this.state.jobs)
     })
   }
   getCategories = () => {
     this.Auth.fetch(`/api/categories`)
     .then(json => {
       this.setState({categories: json})
-      console.log(this.state.categories)
     })
   }
   getAreas = () => {
     this.Auth.fetch(`/api/areas`)
     .then(json => {
       this.setState({areas: json})
-      console.log(this.state.areas)
     })
   }
 
@@ -110,7 +107,6 @@ export class App extends Component {
         })
       })
       .then(json => {
-        console.log(json);
         res(json);
         this.getJobs();
       })
@@ -124,7 +120,6 @@ export class App extends Component {
       })
     })
     .then(json => {
-      console.log(json);
       this.getUser(json._id);
     })
   }
