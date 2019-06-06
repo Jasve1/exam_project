@@ -5,9 +5,9 @@ import User from './User';
 
 afterEach(cleanup);
 
-    let user = {
-        username: 'test'
-    }
+let user = {
+    username: 'test'
+}
 
 
 it('showWhenNotloggedIn', () => {
