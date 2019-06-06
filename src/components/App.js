@@ -42,7 +42,7 @@ export class App extends Component {
     this.getJobs();
     this.getCategories();
     this.getAreas();
-    if(this.Auth.loggedIn() === false){
+    if(this.Auth.loggedIn()){
       this.setState({isLoggedIn: true});
       this.getUser(localStorage.getItem('userId'));
     }

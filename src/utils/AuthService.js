@@ -35,7 +35,7 @@ class AuthService {
             }
         }
 
-        return (token !== undefined);
+        return (token !== null);
     }
 
     setToken(token, userId) {
