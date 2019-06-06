@@ -45,6 +45,9 @@ app.use((req, res, next) => {
 });
 //Open paths that does not need login
 let openPaths = [
+    '/company',
+    '/job/*',
+    '/jobs/*',
     '/api/users/authenticate',
     '/api/users/signUp',
     '/api/jobs',
